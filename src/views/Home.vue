@@ -1,10 +1,43 @@
 <script setup>
+import { ref } from "vue";
+import { storeToRefs } from 'pinia'
+import { invoke } from "@tauri-apps/api/core";
+import { useListStore } from "../stores/list";
+import { useListItemStore } from "../stores/listitems";
+import { useRoute, useRouter } from 'vue-router'
+
+const listStore = useListStore();
+const listItemStore = useListItemStore();
+
+const { getListItemsFor } = storeToRefs(listItemStore);
+
+const router = useRouter()
+const route = useRoute()
+
 </script>
 
 <template>
   <main class="container">
+    <h1>Hello Friend :)</h1>
+
+    <div class="list-container">
+      <h2>Your Reminders at a Glance</h2>
+      <hr style="margin-top: -1rem;">
+        Nothing right now -- keep up the good work.
+
+      <h2>Your Lists at a Glance</h2>
+      <hr style="margin-top: -1rem;">
+      <a @click="listStore.addList({list_name:'test', list_type: 'B'})">add list</a>
+
+      <li v-bind:key="list.list_id" v-for="list in listStore.data">
+        <RouterLink :to="`/lists/${list.list_id}`">{{ list.list_name }}</RouterLink>
+      </li>
+    </div>
+
+    <div>
       <router-view>
       </router-view>
+    </div>
   </main>
 </template>
 
@@ -113,7 +146,7 @@ button {
   margin-right: 5px;
 }
 
-/* @media (prefers-color-scheme: dark) { */
+@media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
     background-color: #2f2f2f;
@@ -131,6 +164,6 @@ button {
   button:active {
     background-color: #0f0f0f69;
   }
-/* } */
+}
 
 </style>
